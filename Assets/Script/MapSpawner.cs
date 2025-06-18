@@ -4,8 +4,9 @@ public class MapSpawner : MonoBehaviour
 {
     public MapData mapData;
 
-    public GameObject boxAPrefab;
-    public GameObject boxBPrefab;
+    public GameObject blockNormalPrefab;
+    public GameObject blockTreePrefab;
+    public GameObject blockWinPrefab;
     public GameObject playerPrefab;
 
     private GameObject playerInstance;
@@ -20,16 +21,20 @@ public class MapSpawner : MonoBehaviour
 
             switch (box.boxType)
             {
-                case BoxType.A:
-                    prefabToSpawn = boxAPrefab;
+                case BoxType.normal:
+                    prefabToSpawn = blockNormalPrefab;
                     break;
-                case BoxType.B:
-                    prefabToSpawn = boxBPrefab;
+                case BoxType.tree:
+                    prefabToSpawn = blockTreePrefab;
+                    break;
+                case BoxType.win:
+                    prefabToSpawn = blockWinPrefab;
                     break;
             }
 
             Vector3 worldPosition = this.transform.position + box.position;
-            Quaternion worldRotation = Quaternion.Euler(box.rotation);
+            Quaternion worldRotation = Quaternion.Euler(0f, box.rotationY, 0f);
+
 
             if (prefabToSpawn != null)
             {
@@ -38,7 +43,7 @@ public class MapSpawner : MonoBehaviour
 
             if (box.isPlayerSpawn && playerPrefab != null)
             {
-                float blockHeight = 0f; // nếu bạn có collider/block cao khác nhau thì có thể lấy chiều cao từ đó
+                float blockHeight = 0f; 
                 float playerHeight = playerPrefab.transform.localScale.y;
 
                 Vector3 playerPosition = worldPosition + new Vector3(0, (blockHeight / 2f) + (playerHeight / 2f), 0);
@@ -55,7 +60,7 @@ public class MapSpawner : MonoBehaviour
 
     public void ClearMap()
     {
-        // Xóa tất cả các con của MapSpawner (các box + player)
+        
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             Destroy(transform.GetChild(i).gameObject);

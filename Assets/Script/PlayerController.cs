@@ -47,6 +47,12 @@ namespace DemoKitStylizedAnimatedDogs
             {
                 StartCoroutine(RotateByAngle(-90f));
             }
+
+            // 👉 Xử lý Space (Animation ID = 5)
+            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                StartCoroutine(PlayShortAnimation(5, 0.05f));
+            }
         }
 
         private void TryMove(Vector3 direction)
@@ -74,7 +80,7 @@ namespace DemoKitStylizedAnimatedDogs
         private IEnumerator MoveStep(Vector3 targetPosition)
         {
             isMoving = true;
-            animator.SetInteger("AnimationID", 4);
+            animator.SetInteger("AnimationID", 3);
 
             while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
             {
@@ -90,7 +96,7 @@ namespace DemoKitStylizedAnimatedDogs
         private IEnumerator RotateByAngle(float angle)
         {
             isRotating = true;
-            animator.SetInteger("AnimationID", 3);
+            animator.SetInteger("AnimationID", 4);
 
             Quaternion startRotation = transform.rotation;
             Quaternion targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + angle, 0);
@@ -106,6 +112,13 @@ namespace DemoKitStylizedAnimatedDogs
             transform.rotation = targetRotation;
             animator.SetInteger("AnimationID", 0);
             isRotating = false;
+        }
+
+        private IEnumerator PlayShortAnimation(int animationID, float duration)
+        {
+            animator.SetInteger("AnimationID", animationID);
+            yield return new WaitForSeconds(duration);
+            animator.SetInteger("AnimationID", 0);
         }
     }
 }

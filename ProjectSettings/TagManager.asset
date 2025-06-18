@@ -5,11 +5,13 @@ TagManager:
   serializedVersion: 3
   tags:
   - Block_Normal
+  - LeftMouthStick
+  - RightMouthStick
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Stick
   - Water
   - UI
   - 
