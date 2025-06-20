@@ -7,6 +7,7 @@ TagManager:
   - Block_Normal
   - PickupA
   - PickupB
+  - Block_Win
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - Stick
   - Water
   - UI
-  - 
+  - Block_noMove
   - 
   - 
   - 

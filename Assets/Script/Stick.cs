@@ -5,32 +5,29 @@ public class Stick : MonoBehaviour
     public Transform pickupPointA;
     public Transform pickupPointB;
 
-    private bool isCollidingNoMove = false;
+    [SerializeField] float detectRadius = 0.15f;
+    [SerializeField] float detectDistance = 0.3f;
+    [SerializeField] LayerMask blockNoMoveLayer;
 
-    public bool IsCollidingNoMove => isCollidingNoMove;
+    public bool IsCollidingNoMove { get; private set; }
 
-    private void OnTriggerEnter(Collider other)
+    private void Update()
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Block_noMove"))
-        {
-            isCollidingNoMove = true;
-        }
+        IsCollidingNoMove = CheckHit(pickupPointA) || CheckHit(pickupPointB);
     }
 
-    private void OnTriggerExit(Collider other)
+    bool CheckHit(Transform point)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Block_noMove"))
-        {
-            isCollidingNoMove = false;
-        }
+        if (point == null) return false;
+        return Physics.CheckSphere(point.position + point.forward * detectDistance, detectRadius, blockNoMoveLayer);
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         if (pickupPointA != null)
-            Gizmos.DrawWireSphere(pickupPointA.position, 0.1f);
+            Gizmos.DrawWireSphere(pickupPointA.position + pickupPointA.forward * detectDistance, detectRadius);
         if (pickupPointB != null)
-            Gizmos.DrawWireSphere(pickupPointB.position, 0.1f);
+            Gizmos.DrawWireSphere(pickupPointB.position + pickupPointB.forward * detectDistance, detectRadius);
     }
 }

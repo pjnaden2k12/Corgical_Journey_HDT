@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 7200240270459002062}
   m_Layer: 0
   m_Name: Block_Win
-  m_TagString: Block_Normal
+  m_TagString: Block_Win
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
