@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Block_Normal
-  - LeftMouthStick
-  - RightMouthStick
+  - PickupA
+  - PickupB
   layers:
   - Default
   - TransparentFX

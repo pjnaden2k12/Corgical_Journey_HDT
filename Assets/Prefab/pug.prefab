@@ -5221,7 +5221,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6682489586665505830}
-  - component: {fileID: 5093430330945863250}
   m_Layer: 0
   m_Name: DEF-teeth.B
   m_TagString: Untagged
@@ -5244,27 +5243,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1317434133010988211}
   m_LocalEulerAnglesHint: {x: -74.704605, y: -179.99998, z: -180}
---- !u!65 &5093430330945863250
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6387083783034748048}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.091850325, y: 0.0910183, z: 0.03528925}
-  m_Center: {x: -0.0017596111, y: -0.002803822, z: 0.020255877}
 --- !u!1 &6411553056579890625
 GameObject:
   m_ObjectHideFlags: 0
@@ -5595,6 +5573,8 @@ GameObject:
   - component: {fileID: 1400042664716455783}
   - component: {fileID: 7519017690183814261}
   - component: {fileID: 4321390012292546002}
+  - component: {fileID: 7273085273566896717}
+  - component: {fileID: 3480585386811468044}
   m_Layer: 0
   m_Name: pug
   m_TagString: Untagged
@@ -5685,8 +5665,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -5706,6 +5686,44 @@ MonoBehaviour:
   moveSpeed: 3
   rotateSpeed: 360
   animator: {fileID: 4535746553154542790}
+  pickupDetector: {fileID: 7273085273566896717}
+  blockNoMoveLayer:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &7273085273566896717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7105132547998492349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e6bb8abe21c72943919d4ae1df409f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouthPosition: {fileID: 6682489586665505830}
+--- !u!135 &3480585386811468044
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7105132547998492349}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.28625554
+  m_Center: {x: 0.023661315, y: 0.19008315, z: 0}
 --- !u!1 &7106480052016395656
 GameObject:
   m_ObjectHideFlags: 0
