@@ -67,9 +67,10 @@ GameObject:
   - component: {fileID: 7671444276355884386}
   - component: {fileID: 8726581918939839885}
   - component: {fileID: 8996819453704586907}
+  - component: {fileID: -6287364503268702385}
   m_Layer: 3
   m_Name: Stick
-  m_TagString: Untagged
+  m_TagString: Stick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,7 +163,7 @@ MonoBehaviour:
   detectDistance: 0.3
   blockNoMoveLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!54 &8726581918939839885
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -211,6 +212,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.00035655953, y: 0.00038377877, z: 0.01226685}
   m_Center: {x: -0.0008567783, y: -0.00044310914, z: 0.0047039855}
+--- !u!114 &-6287364503268702385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5035058353448184850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36aa02d38bb10b548bc7b8879596b15c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WaterVolumeHelper: {fileID: 0}
 --- !u!1 &6806668054082940573
 GameObject:
   m_ObjectHideFlags: 0

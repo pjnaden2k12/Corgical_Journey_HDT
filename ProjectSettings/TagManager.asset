@@ -8,6 +8,8 @@ TagManager:
   - PickupA
   - PickupB
   - Block_Win
+  - Stick
+  - Block_Stick
   layers:
   - Default
   - TransparentFX

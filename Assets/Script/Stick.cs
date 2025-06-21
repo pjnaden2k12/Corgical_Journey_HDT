@@ -8,7 +8,7 @@ public class Stick : MonoBehaviour
     [SerializeField] float detectRadius = 0.15f;
     [SerializeField] float detectDistance = 0.3f;
     [SerializeField] LayerMask blockNoMoveLayer;
-
+    [SerializeField] private Transform mapTransform;
     public bool IsCollidingNoMove { get; private set; }
 
     private void Update()

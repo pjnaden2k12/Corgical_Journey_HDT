@@ -16,6 +16,7 @@ public enum BoxType
 {
     normal,
     tree,
+    stick,
     win
 }
 

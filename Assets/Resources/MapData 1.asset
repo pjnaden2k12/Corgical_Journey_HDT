@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MapData 1
   m_EditorClassIdentifier: 
   boxList:
-  - boxType: 2
+  - boxType: 3
     position: {x: 0, y: 0, z: 0}
     rotationY: 0
     isPlayerSpawn: 0
@@ -29,7 +29,7 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 2}
     rotationY: 0
     isPlayerSpawn: 0
-  - boxType: 0
+  - boxType: 2
     position: {x: 0, y: 0, z: 3}
     rotationY: 180
     isPlayerSpawn: 1

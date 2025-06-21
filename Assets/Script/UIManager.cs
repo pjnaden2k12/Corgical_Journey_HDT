@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -15,8 +16,24 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform cotiButton;
     [SerializeField] private RectTransform htpButton;
     [SerializeField] private RectTransform panelHTPRect;
+    [SerializeField] private RectTransform panelLevelsRect;
     [SerializeField] private Button htpBtn;
     [SerializeField] private Button exitButton;
+    [SerializeField] private Button newGameBtn;
+    [SerializeField] private Button continueBtn;
+    [SerializeField] private Button homeButton;
+    [SerializeField] private Button backToLevelButton;
+
+
+    [Header("Level Buttons")]
+    [SerializeField] private Button[] levelButtons;
+    [SerializeField] private Color unlockedColor = Color.white;
+    [SerializeField] private Color lockedColor = Color.gray;
+    [SerializeField] private float levelButtonAnimDelay = 0.05f;
+    [SerializeField] private float levelButtonScaleTime = 0.2f;
+
+    [Header("References")]
+    [SerializeField] private LevelManager levelManager;
 
     [Header("Animation Settings")]
     [SerializeField] private Vector2 logoStartPos = new Vector2(0, 800);
@@ -26,9 +43,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float buttonScaleTime = 0.3f;
     [SerializeField] private float panelScaleTime = 0.3f;
 
+    [Header("Fade")]
+    [SerializeField] private Image fadeImage;
+    [SerializeField] private float fadeDuration = 1f;
+
+    [SerializeField] private MapSpawner mapSpawner;
     private void Start()
     {
-        // Ban đầu
         panelHome.SetActive(true);
         panelHTP.SetActive(false);
         panelLevels.SetActive(false);
@@ -40,10 +61,30 @@ public class UIManager : MonoBehaviour
         htpButton.localScale = Vector3.zero;
         panelHTPRect.localScale = Vector3.zero;
 
-        // Gán nút
+        backToLevelButton.onClick.AddListener(OpenLevelPanel);
+        backToLevelButton.gameObject.SetActive(false);
+
         htpBtn.onClick.AddListener(OpenHTPPanel);
         exitButton.onClick.AddListener(CloseHTPPanel);
-
+        newGameBtn.onClick.AddListener(OnNewGameClicked);
+        continueBtn.onClick.AddListener(OnContinueClicked);
+        homeButton.onClick.AddListener(BackToHome);
+        int savedLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        if (savedLevel < 1)
+        {
+            continueBtn.interactable = false;
+            ColorBlock colors = continueBtn.colors;
+            colors.normalColor = lockedColor; 
+            continueBtn.colors = colors;
+        }
+        else
+        {
+            continueBtn.interactable = true;
+            ColorBlock colors = continueBtn.colors;
+            colors.normalColor = unlockedColor; 
+            continueBtn.colors = colors;
+        }
+        
         AnimateLogo();
     }
 
@@ -64,15 +105,12 @@ public class UIManager : MonoBehaviour
 
     private void OpenHTPPanel()
     {
-        Debug.Log("HTP Button Clicked"); // Thêm dòng này
         if (panelHTP.activeSelf) return;
 
         panelHTP.SetActive(true);
         panelHTPRect.localScale = Vector3.zero;
-
         panelHTPRect.DOScale(Vector3.one, panelScaleTime).SetEase(Ease.OutBack);
     }
-
 
     private void CloseHTPPanel()
     {
@@ -82,10 +120,144 @@ public class UIManager : MonoBehaviour
         });
     }
 
-    // Nếu cần thêm cho PanelLevels
     public void OpenLevelPanel()
     {
         panelHome.SetActive(false);
         panelLevels.SetActive(true);
+
+        panelLevelsRect.localScale = Vector3.zero;
+        panelLevelsRect.DOScale(Vector3.one, panelScaleTime).SetEase(Ease.OutBack);
+
+        SetupLevelButtons();
+        AnimateLevelButtons();
+        backToLevelButton.gameObject.SetActive(false);
+        if (mapSpawner != null)
+        {
+            mapSpawner.ClearMap();
+        }
     }
+    public void CloseLevelPanel()
+    {
+        panelLevelsRect.DOScale(Vector3.zero, panelScaleTime)
+            .SetEase(Ease.InBack)
+            .OnComplete(() =>
+            {
+                panelLevels.SetActive(false);
+            });
+    }
+
+
+    private void OnNewGameClicked()
+    {
+        levelManager.ResetProgress();
+        OpenLevelPanel();
+    }
+
+    private void OnContinueClicked()
+    {
+        int savedLevel = PlayerPrefs.GetInt("CurrentLevel", 0);  
+        panelHTP.SetActive(false);
+        FadeInAndLoadLevel(savedLevel);
+        ShowBackToLevelButton(true);
+    }
+
+
+    private void BackToHome()
+    {
+        panelHome.SetActive(true);
+        CloseLevelPanel();
+        panelHTP.SetActive(false);
+        UpdateContinueButtonState();
+    }
+
+    private void SetupLevelButtons()
+    {
+        int currentUnlockedLevel = PlayerPrefs.GetInt("CurrentLevel", 0);
+
+        for (int i = 0; i < levelButtons.Length; i++)
+        {
+            Button btn = levelButtons[i];
+
+            bool unlocked = i <= currentUnlockedLevel;
+            btn.interactable = unlocked;
+
+            ColorBlock colors = btn.colors;
+            colors.normalColor = unlocked ? unlockedColor : lockedColor;
+            btn.colors = colors;
+
+            btn.transform.localScale = Vector3.zero;
+
+            btn.onClick.RemoveAllListeners();
+
+            if (unlocked)
+            {
+                int levelIndex = i;
+                btn.onClick.AddListener(() =>
+                {
+                    FadeInAndLoadLevel(levelIndex);
+                    
+                    ShowBackToLevelButton(true);
+                });
+
+            }
+        }
+    }
+
+    private void AnimateLevelButtons()
+    {
+        for (int i = 0; i < levelButtons.Length; i++)
+        {
+            Transform btnTransform = levelButtons[i].transform;
+            btnTransform.localScale = Vector3.zero;
+
+            btnTransform.DOScale(Vector3.one, levelButtonScaleTime)
+                .SetEase(Ease.OutBack)
+                .SetDelay(i * levelButtonAnimDelay);
+        }
+    }
+    public void ShowBackToLevelButton(bool show)
+    {
+        backToLevelButton.gameObject.SetActive(show);
+    }
+    public void FadeInAndLoadLevel(int levelIndex)
+    {
+        StartCoroutine(FadeInCoroutine(levelIndex));
+    }
+
+    private IEnumerator FadeInCoroutine(int levelIndex)
+    {
+        fadeImage.gameObject.SetActive(true);
+        fadeImage.color = new Color(0, 0, 0, 0);
+        yield return fadeImage.DOFade(1f, fadeDuration).WaitForCompletion();
+
+        yield return new WaitForSeconds(0.3f); 
+        panelLevels.SetActive(false);
+        panelHome.SetActive(false);
+        levelManager.LoadLevel(levelIndex); 
+
+        fadeImage.color = new Color(0, 0, 0, 1);
+        yield return fadeImage.DOFade(0f, fadeDuration).WaitForCompletion();
+
+        fadeImage.gameObject.SetActive(false);
+    }
+    private void UpdateContinueButtonState()
+    {
+        int savedLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+
+        if (savedLevel < 1)
+        {
+            continueBtn.interactable = false;
+            ColorBlock colors = continueBtn.colors;
+            colors.normalColor = lockedColor;
+            continueBtn.colors = colors;
+        }
+        else
+        {
+            continueBtn.interactable = true;
+            ColorBlock colors = continueBtn.colors;
+            colors.normalColor = unlockedColor;
+            continueBtn.colors = colors;
+        }
+    }
+
 }

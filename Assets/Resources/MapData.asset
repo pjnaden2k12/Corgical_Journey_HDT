@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b6c38f42ad38a84d9b0fb8fa0d93db6, type: 3}
   m_Name: MapData
   m_EditorClassIdentifier: 
-  boxList: []
+  boxList:
+  - boxType: 0
+    position: {x: 0, y: 0, z: 0}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 0
+    position: {x: 0, y: 0, z: 0}
+    rotationY: 0
+    isPlayerSpawn: 0

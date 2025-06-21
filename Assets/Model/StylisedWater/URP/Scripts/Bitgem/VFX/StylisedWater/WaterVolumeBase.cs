@@ -99,7 +99,6 @@ namespace Bitgem.VFX.StylisedWater
         {
             if (tiles == null)
             {
-                Debug.LogWarning("tiles is null. Did you forget to call Rebuild()?");
                 return null;
             }
             // convert the position to a tile

@@ -7,6 +7,7 @@ public class MapSpawner : MonoBehaviour
     public GameObject blockNormalPrefab;
     public GameObject blockTreePrefab;
     public GameObject blockWinPrefab;
+    public GameObject blockStickPrefab;
     public GameObject playerPrefab;
 
     private GameObject playerInstance;
@@ -26,6 +27,9 @@ public class MapSpawner : MonoBehaviour
                     break;
                 case BoxType.tree:
                     prefabToSpawn = blockTreePrefab;
+                    break;
+                case BoxType.stick:
+                    prefabToSpawn = blockStickPrefab;
                     break;
                 case BoxType.win:
                     prefabToSpawn = blockWinPrefab;

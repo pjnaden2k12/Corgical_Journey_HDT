@@ -25,6 +25,7 @@ namespace DemoKitStylizedAnimatedDogs
         {
             if (levelManager == null)
                 levelManager = FindFirstObjectByType<LevelManager>();
+            StartCoroutine(AutoTryPickupAtSpawn());
         }
 
         void Update()
@@ -53,6 +54,20 @@ namespace DemoKitStylizedAnimatedDogs
             if (pickupDetector.IsHolding && CheckBlockWinAtPosition(transform.position))
             {
                 StartCoroutine(PlayWinAnimationAndLoadNextLevel());
+            }
+        }
+        private IEnumerator AutoTryPickupAtSpawn()
+        {
+            yield return new WaitForSeconds(0.1f); 
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (!pickupDetector.IsHolding && pickupDetector.CurrentPickupPoint != null)
+                {
+                    pickupDetector.TryPickup();
+                }
+
+                yield return new WaitForSeconds(0.1f);
             }
         }
 
@@ -161,7 +176,7 @@ namespace DemoKitStylizedAnimatedDogs
         bool IsBlockNormalAt(Vector3 pos)
         {
             foreach (var c in Physics.OverlapSphere(pos, 0.1f))
-                if (c.CompareTag("Block_Normal") || c.CompareTag("Block_Win")) return true;
+                if (c.CompareTag("Block_Normal") || c.CompareTag("Block_Win") || c.CompareTag("Block_Stick")) return true;
             return false;
         }
 
@@ -194,11 +209,27 @@ namespace DemoKitStylizedAnimatedDogs
             isInteracting = true;
             animator.SetInteger("AnimationID", 5);
             yield return new WaitForSeconds(0.2f);
+
+     
+            Transform stick = pickupDetector.GetHeldStickTransform();
+
             pickupDetector.TryDrop();
+
+            if (stick != null)
+            {
+                GameObject map = GameObject.Find("Map");
+                if (map != null)
+                {
+                    stick.SetParent(map.transform, true);
+                    
+                }
+            }
+
             animator.SetInteger("AnimationID", 0);
             yield return new WaitForSeconds(1.8f);
             isInteracting = false;
         }
+
         bool CheckBlockWinAtPosition(Vector3 pos)
         {
             Collider[] hits = Physics.OverlapSphere(pos, 0.3f);
@@ -217,7 +248,8 @@ namespace DemoKitStylizedAnimatedDogs
             animator.SetInteger("AnimationID", 6);
             yield return new WaitForSeconds(3f); 
             animator.SetInteger("AnimationID", 0);
-            levelManager.NextLevel();
+
+            levelManager.LevelComplete();
             isWinning = false;
         }
 

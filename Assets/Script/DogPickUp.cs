@@ -58,4 +58,9 @@ public class DogMouthPickup : MonoBehaviour
             }
         }
     }
+    public void ForceSetHeldStick(Transform stick)
+    {
+        heldStick = stick;
+    }
+
 }
