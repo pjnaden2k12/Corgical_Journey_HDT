@@ -13,13 +13,16 @@ namespace DemoKitStylizedAnimatedDogs
         [SerializeField] DogMouthPickup pickupDetector;
         [SerializeField] LevelManager levelManager;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip moveAudioClip;
+        [SerializeField] private AudioClip pickupDropAudioClip;
+        [SerializeField] private AudioClip stickCollisionAudioClip;
+        [SerializeField] private AudioClip winAudioClip;
 
-
-
-        bool isMoving, isRotating, isInteracting;
+        bool isMoving, isRotating, isInteracting, isWinning;
         Vector3 moveStartPos;
         Quaternion rotateStartRot;
-        
 
         private void Start()
         {
@@ -43,12 +46,11 @@ namespace DemoKitStylizedAnimatedDogs
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
             {
                 if (isInteracting) return;
+
                 if (pickupDetector.IsHolding)
                     StartCoroutine(PlayDropAnimationThenRelease());
-
                 else
                     StartCoroutine(HandleRotateAndPickup());
-
             }
 
             if (pickupDetector.IsHolding && CheckBlockWinAtPosition(transform.position))
@@ -56,9 +58,10 @@ namespace DemoKitStylizedAnimatedDogs
                 StartCoroutine(PlayWinAnimationAndLoadNextLevel());
             }
         }
+
         private IEnumerator AutoTryPickupAtSpawn()
         {
-            yield return new WaitForSeconds(0.1f); 
+            yield return new WaitForSeconds(0.1f);
 
             for (int i = 0; i < 3; i++)
             {
@@ -66,7 +69,6 @@ namespace DemoKitStylizedAnimatedDogs
                 {
                     pickupDetector.TryPickup();
                 }
-
                 yield return new WaitForSeconds(0.1f);
             }
         }
@@ -88,13 +90,19 @@ namespace DemoKitStylizedAnimatedDogs
         {
             if (!pickupDetector.IsHolding) return false;
             var stick = pickupDetector.GetHeldStickTransform();
-            return stick != null && stick.GetComponent<Stick>().IsCollidingNoMove;
+            bool isBlocking = stick != null && stick.GetComponent<Stick>().IsCollidingNoMove;
+
+            if (isBlocking && stickCollisionAudioClip != null)
+                audioSource.PlayOneShot(stickCollisionAudioClip);
+
+            return isBlocking;
         }
 
         IEnumerator MoveStep(Vector3 target)
         {
             isMoving = true;
             animator.SetInteger("AnimationID", 3);
+            PlayMoveSound();
 
             while (Vector3.Distance(transform.position, target) > 0.01f)
             {
@@ -116,6 +124,8 @@ namespace DemoKitStylizedAnimatedDogs
         IEnumerator MoveBackTo(Vector3 backPosition)
         {
             animator.SetInteger("AnimationID", 3);
+            PlayMoveSound();
+
             while (Vector3.Distance(transform.position, backPosition) > 0.01f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, backPosition, moveSpeed * Time.deltaTime);
@@ -131,6 +141,7 @@ namespace DemoKitStylizedAnimatedDogs
         {
             isRotating = true;
             animator.SetInteger("AnimationID", 4);
+            PlayMoveSound();
 
             Quaternion start = transform.rotation;
             Quaternion target = Quaternion.Euler(0, transform.eulerAngles.y + angle, 0);
@@ -157,6 +168,8 @@ namespace DemoKitStylizedAnimatedDogs
         IEnumerator RotateBackTo(Quaternion backRotation)
         {
             animator.SetInteger("AnimationID", 4);
+            PlayMoveSound();
+
             Quaternion current = transform.rotation;
             float t = 0f;
 
@@ -171,7 +184,6 @@ namespace DemoKitStylizedAnimatedDogs
             animator.SetInteger("AnimationID", 0);
             isRotating = false;
         }
-
 
         bool IsBlockNormalAt(Vector3 pos)
         {
@@ -198,7 +210,10 @@ namespace DemoKitStylizedAnimatedDogs
 
             animator.SetInteger("AnimationID", 5);
             yield return new WaitForSeconds(0.2f);
+
+            PlayPickupDropSound();
             pickupDetector.TryPickup();
+
             animator.SetInteger("AnimationID", 0);
             yield return new WaitForSeconds(1.8f);
             isInteracting = false;
@@ -210,9 +225,8 @@ namespace DemoKitStylizedAnimatedDogs
             animator.SetInteger("AnimationID", 5);
             yield return new WaitForSeconds(0.2f);
 
-     
+            PlayPickupDropSound();
             Transform stick = pickupDetector.GetHeldStickTransform();
-
             pickupDetector.TryDrop();
 
             if (stick != null)
@@ -221,7 +235,6 @@ namespace DemoKitStylizedAnimatedDogs
                 if (map != null)
                 {
                     stick.SetParent(map.transform, true);
-                    
                 }
             }
 
@@ -240,20 +253,31 @@ namespace DemoKitStylizedAnimatedDogs
             }
             return false;
         }
-        private bool isWinning;
+
         IEnumerator PlayWinAnimationAndLoadNextLevel()
         {
-
             isWinning = true;
             animator.SetInteger("AnimationID", 6);
-            yield return new WaitForSeconds(3f); 
-            animator.SetInteger("AnimationID", 0);
 
+            if (winAudioClip != null)
+                audioSource.PlayOneShot(winAudioClip);
+
+            yield return new WaitForSeconds(3f);
+            animator.SetInteger("AnimationID", 0);
             levelManager.LevelComplete();
             isWinning = false;
         }
 
+        void PlayMoveSound()
+        {
+            if (moveAudioClip != null)
+                audioSource.PlayOneShot(moveAudioClip);
+        }
 
+        void PlayPickupDropSound()
+        {
+            if (pickupDropAudioClip != null)
+                audioSource.PlayOneShot(pickupDropAudioClip);
+        }
     }
-
 }

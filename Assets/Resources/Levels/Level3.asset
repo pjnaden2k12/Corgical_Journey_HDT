@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b6c38f42ad38a84d9b0fb8fa0d93db6, type: 3}
+  m_Name: Level3
+  m_EditorClassIdentifier: 
+  boxList:
+  - boxType: 0
+    position: {x: 0, y: 0, z: 0}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 0
+    position: {x: 1, y: 0, z: 0}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 2
+    position: {x: 2, y: 0, z: 0}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 1
+    position: {x: 2, y: 0, z: -1}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 1
+    position: {x: 1, y: 0, z: 1}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 0
+    position: {x: 2, y: 0, z: 1}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 0
+    position: {x: 0, y: 0, z: 1}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 1
+    position: {x: -1, y: 0, z: 0}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 1
+    position: {x: -2, y: 0, z: -1}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 0
+    position: {x: 0, y: 0, z: 2}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 0
+    position: {x: -1, y: 0, z: 2}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 3
+    position: {x: -2, y: 0, z: 2}
+    rotationY: 0
+    isPlayerSpawn: 0
+  - boxType: 0
+    position: {x: 2, y: 0, z: 2}
+    rotationY: 180
+    isPlayerSpawn: 1

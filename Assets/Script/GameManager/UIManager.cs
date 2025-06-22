@@ -24,7 +24,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button homeButton;
     [SerializeField] private Button backToLevelButton;
 
-
     [Header("Level Buttons")]
     [SerializeField] private Button[] levelButtons;
     [SerializeField] private Color unlockedColor = Color.white;
@@ -48,6 +47,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float fadeDuration = 1f;
 
     [SerializeField] private MapSpawner mapSpawner;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource bgmSource;
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioClip buttonClickClip;
+
     private void Start()
     {
         panelHome.SetActive(true);
@@ -61,30 +66,64 @@ public class UIManager : MonoBehaviour
         htpButton.localScale = Vector3.zero;
         panelHTPRect.localScale = Vector3.zero;
 
-        backToLevelButton.onClick.AddListener(OpenLevelPanel);
+        backToLevelButton.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            OpenLevelPanel();
+        });
         backToLevelButton.gameObject.SetActive(false);
 
-        htpBtn.onClick.AddListener(OpenHTPPanel);
-        exitButton.onClick.AddListener(CloseHTPPanel);
-        newGameBtn.onClick.AddListener(OnNewGameClicked);
-        continueBtn.onClick.AddListener(OnContinueClicked);
-        homeButton.onClick.AddListener(BackToHome);
+        htpBtn.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            OpenHTPPanel();
+        });
+
+        exitButton.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            CloseHTPPanel();
+        });
+
+        newGameBtn.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            OnNewGameClicked();
+        });
+
+        continueBtn.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            OnContinueClicked();
+        });
+
+        homeButton.onClick.AddListener(() =>
+        {
+            PlayButtonSound();
+            BackToHome();
+        });
+
         int savedLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         if (savedLevel < 1)
         {
             continueBtn.interactable = false;
             ColorBlock colors = continueBtn.colors;
-            colors.normalColor = lockedColor; 
+            colors.normalColor = lockedColor;
             continueBtn.colors = colors;
         }
         else
         {
             continueBtn.interactable = true;
             ColorBlock colors = continueBtn.colors;
-            colors.normalColor = unlockedColor; 
+            colors.normalColor = unlockedColor;
             continueBtn.colors = colors;
         }
-        
+
+        if (bgmSource != null && !bgmSource.isPlaying)
+        {
+            bgmSource.Play();
+        }
+
         AnimateLogo();
     }
 
@@ -136,6 +175,7 @@ public class UIManager : MonoBehaviour
             mapSpawner.ClearMap();
         }
     }
+
     public void CloseLevelPanel()
     {
         panelLevelsRect.DOScale(Vector3.zero, panelScaleTime)
@@ -146,7 +186,6 @@ public class UIManager : MonoBehaviour
             });
     }
 
-
     private void OnNewGameClicked()
     {
         levelManager.ResetProgress();
@@ -155,12 +194,12 @@ public class UIManager : MonoBehaviour
 
     private void OnContinueClicked()
     {
-        int savedLevel = PlayerPrefs.GetInt("CurrentLevel", 0);  
+        int savedLevel = PlayerPrefs.GetInt("CurrentLevel", 0);
+
         panelHTP.SetActive(false);
         FadeInAndLoadLevel(savedLevel);
         ShowBackToLevelButton(true);
     }
-
 
     private void BackToHome()
     {
@@ -177,7 +216,6 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < levelButtons.Length; i++)
         {
             Button btn = levelButtons[i];
-
             bool unlocked = i <= currentUnlockedLevel;
             btn.interactable = unlocked;
 
@@ -186,7 +224,6 @@ public class UIManager : MonoBehaviour
             btn.colors = colors;
 
             btn.transform.localScale = Vector3.zero;
-
             btn.onClick.RemoveAllListeners();
 
             if (unlocked)
@@ -194,11 +231,10 @@ public class UIManager : MonoBehaviour
                 int levelIndex = i;
                 btn.onClick.AddListener(() =>
                 {
+                    PlayButtonSound();
                     FadeInAndLoadLevel(levelIndex);
-                    
                     ShowBackToLevelButton(true);
                 });
-
             }
         }
     }
@@ -215,10 +251,12 @@ public class UIManager : MonoBehaviour
                 .SetDelay(i * levelButtonAnimDelay);
         }
     }
+
     public void ShowBackToLevelButton(bool show)
     {
         backToLevelButton.gameObject.SetActive(show);
     }
+
     public void FadeInAndLoadLevel(int levelIndex)
     {
         StartCoroutine(FadeInCoroutine(levelIndex));
@@ -229,21 +267,18 @@ public class UIManager : MonoBehaviour
         fadeImage.gameObject.SetActive(true);
         fadeImage.color = new Color(0, 0, 0, 0);
         yield return fadeImage.DOFade(1f, fadeDuration).WaitForCompletion();
-
-        yield return new WaitForSeconds(0.3f); 
+        yield return new WaitForSeconds(0.3f);
         panelLevels.SetActive(false);
         panelHome.SetActive(false);
-        levelManager.LoadLevel(levelIndex); 
-
+        levelManager.LoadLevel(levelIndex);
         fadeImage.color = new Color(0, 0, 0, 1);
         yield return fadeImage.DOFade(0f, fadeDuration).WaitForCompletion();
-
         fadeImage.gameObject.SetActive(false);
     }
+
     private void UpdateContinueButtonState()
     {
         int savedLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-
         if (savedLevel < 1)
         {
             continueBtn.interactable = false;
@@ -260,4 +295,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void PlayButtonSound()
+    {
+        if (sfxSource != null && buttonClickClip != null)
+        {
+            sfxSource.PlayOneShot(buttonClickClip);
+        }
+    }
 }
